@@ -4,6 +4,12 @@
 
 Architect is a framework for generating comprehensive project documentation optimized for AI-assisted development. It provides structured templates and workflows for creating essential documentation through interaction with Large Language Models (LLMs).
 
+For examples of the documents produced see:
+
+- [product-requirements-definition](prd-example.md)
+- [technical-approach](technical-approach-example.md)
+- [tasks](tasks-example.md)
+
 ## Versions
 
 ### Architect (Full)
