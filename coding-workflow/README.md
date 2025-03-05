@@ -62,7 +62,14 @@ Both workflows share core functionalities:
    TEST_COMMAND = your-global-test-command
    ```
 
-4. Follow the three-step workflow:
+4. Initiate:
+
+   ```
+   Initiate workflow as per (@.cursorrules|@full-coding-workflow.md etc.)
+   ```
+
+5. Follow the three-step workflow:
+
    - Review tasks
    - Implement task
    - Update task status
@@ -86,8 +93,10 @@ Both workflows implement three main triggers:
 
 1. **Gotchas**
 
-   - watchout for duplication of code (its less with system, but still happens)
-   - watchout for unnecessary bespoke implementation when ready made packages available
+   - Watch for the 🤖 emoji to confirm prompt context retention
+   - Favour starting next task in a new chat window to keep context size down (same initialise step)
+   - Watchout for duplication of code (its less with system, but still happens)
+   - Watchout for unnecessary bespoke implementation when ready made packages available
 
 2. **Documentation Location**
 
