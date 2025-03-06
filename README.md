@@ -94,6 +94,12 @@ project-root/
    - Confirm technical approach
    - Review generated documentation
 
+4. Ready for coding workflow
+
+   - Use generated docs in your new project
+   - Use one of the coding workflow system prompts [coding-workflow-readme](coding-workflow/README.md)
+   - Follow the workflow readme to run the process
+
 ## Best Practices
 
 - Watch for the 👷 emoji to confirm prompt context retention
