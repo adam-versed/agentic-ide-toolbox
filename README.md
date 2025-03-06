@@ -88,6 +88,7 @@ project-root/
    ```
 
 3. Follow the guided process:
+
    - Review and approve generated context
    - Validate feature prioritization
    - Confirm technical approach
@@ -103,6 +104,15 @@ project-root/
 - Explicitly request adherence to specific rules if needed
 - If using cursor add [mermaid_best_practices.md](mermaid-diagram-guidelines.md) as a project rule
   - avoids syntax errors with ERD diagrams
+
+## Adapt to your use cases
+
+- This framework is adaptable and flexible
+- The current example and templates work for a generic level of complexity
+- If you require more detail or different formating:
+  - alter the corresponding pattern and example md files to your taste
+  - add additional documents to generation process
+- Maybe additional additional steps to the analysis step i.e. add a github search through MCP
 
 ## Alternative LLM Usage
 
