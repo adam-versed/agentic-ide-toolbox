@@ -4,6 +4,22 @@
 
 Architect is a framework for generating comprehensive project documentation optimized for AI-assisted development. It provides structured templates and workflows for creating essential documentation through interaction with Large Language Models (LLMs).
 
+### TLDR Quick Setup (Claude 3.5 + Architect Mini Version)
+
+1. Download these template files:
+
+   - [architect-mini.md](architect-mini.md)
+   - [tasks-pattern.md](tasks-pattern.md)
+   - [tasks-example.md](tasks-example.md)
+   - [technical-approach-pattern.md](technical-approach-pattern.md)
+   - [technical-approach-example.md](technical-approach-example.md)
+
+2. Update `architect-mini.md` DOCS_PATH (top of file), leave blank if all docs in same location = ``
+3. Share amended `architect-mini.md` with Claude 3.5 and describe your project
+4. Follow the guided 5-step process to generate your documentation
+5. No additional tools or IDE required - just Claude 3.5!
+6. Use the produced docs with the mini workflow prompt in your IDE of choice [mini-coding-workflow.md](coding-workflow/mini-coding-workflow.md)
+
 For examples of the documents produced see:
 
 - [product-requirements-definition](prd-example.md)
@@ -84,7 +100,7 @@ project-root/
    I enjoy eating street food but find it hard to know what local options there are and what they serve. I dont have time to follow all the social channels to find out about my options and know where and when they will be serving. I would also like to be able to see reviews and follow other peoples recommendations of local street food vendors.
 
    Product vision:
-   A web directory of local street food vendors that users can follow to find out where and when they will be serving food, images of their food, what’s on their menu and customer reviews of their food. This can be seen in differing levels of detail via a interactive google map - designed to share key information quickly and easily, and vendor profile pages where more detailed information can be sought. The vendor information is sourced from vendor profiles on social media platforms via automated processes and is regularly updated - requiring no effort on behalf of the vendor.
+   A web directory of local street food vendors that users can follow to find out where and when they will be serving food, images of their food, what's on their menu and customer reviews of their food. This can be seen in differing levels of detail via a interactive google map - designed to share key information quickly and easily, and vendor profile pages where more detailed information can be sought. The vendor information is sourced from vendor profiles on social media platforms via automated processes and is regularly updated - requiring no effort on behalf of the vendor.
    ```
 
 3. Follow the guided process:
