@@ -31,6 +31,7 @@ Begin each response with 👷.
       - Be scalable
       - Compliant with data protection regulations
       - Implement best practices
+      - Prefer established libraries over custom implementations unless adding clear value
 - Output [PROJECT_CONTEXT] to the user for revision before proceeding
 
 ### Step 2. Agree on [FEATURES]
