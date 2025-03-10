@@ -90,6 +90,7 @@ Begin each response with 👷.
      - Reference tasks-example.md for appropriate content depth
      - Follow the task numbering, status formats, and section organization from tasks-pattern.md
      - Match the level of detail in requirements and acceptance criteria from tasks-example.md
+     - We have a team of developers so try and create tasks that can be run in parallel where possible
 
   3. For technical-approach.md:
 

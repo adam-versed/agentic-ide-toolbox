@@ -77,6 +77,7 @@ Begin each response with 👷.
      - Reference `${DOCS_PATH}tasks-example.md` for appropriate content depth
      - Follow the task numbering, status formats, and section organization from `${DOCS_PATH}tasks-pattern.md`
      - Match the level of detail in requirements and acceptance criteria from `${DOCS_PATH}tasks-example.md`
+     - We have a team of developers so try and create tasks that can be run in parallel where possible
 
   2. For technical-approach.md:
 
