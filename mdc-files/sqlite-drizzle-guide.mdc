@@ -1,0 +1,798 @@
+---
+description: SQLite drizzle ORM guide
+globs: src/storage/*, src/types/*
+alwaysApply: false
+---
+# SQLite with Drizzle ORM: Implementation Guide
+
+## Table of Contents
+
+- [Setup and Configuration](mdc:#setup-and-configuration)
+  - [Installation](mdc:#installation)
+  - [Basic Configuration](mdc:#basic-configuration)
+  - [Project Structure](mdc:#project-structure)
+- [Schema Definition](mdc:#schema-definition)
+  - [Defining Tables](mdc:#defining-tables)
+  - [Column Types and SQLite Mapping](mdc:#column-types-and-sqlite-mapping)
+  - [Relationships](mdc:#relationships)
+  - [Indices and Constraints](mdc:#indices-and-constraints)
+- [Database Operations](mdc:#database-operations)
+  - [CRUD Operations](mdc:#crud-operations)
+  - [Query Building](mdc:#query-building)
+  - [Transactions](mdc:#transactions)
+- [Migrations](mdc:#migrations)
+  - [Setting Up Migrations](mdc:#setting-up-migrations)
+  - [Creating and Running Migrations](mdc:#creating-and-running-migrations)
+  - [SQLite Migration Considerations](mdc:#sqlite-migration-considerations)
+- [Best Practices](mdc:#best-practices)
+  - [Performance Optimization](mdc:#performance-optimization)
+  - [SQLite-Specific Considerations](mdc:#sqlite-specific-considerations)
+  - [Security Implementation](mdc:#security-implementation)
+- [Testing](mdc:#testing)
+  - [In-Memory Database Testing](mdc:#in-memory-database-testing)
+  - [Test Data Setup](mdc:#test-data-setup)
+- [Common Issues and Solutions](mdc:#common-issues-and-solutions)
+  - [Connection Problems](mdc:#connection-problems)
+  - [Migration Errors](mdc:#migration-errors)
+  - [Concurrency Limitations](mdc:#concurrency-limitations)
+
+## Setup and Configuration
+
+### Installation
+
+```bash
+# Create project directory
+mkdir drizzle-sqlite-project && cd drizzle-sqlite-project
+
+# Initialize Node.js project
+npm init -y
+
+# Install dependencies
+npm install drizzle-orm better-sqlite3
+npm install -D drizzle-kit typescript ts-node @types/node @types/better-sqlite3
+
+# Initialize TypeScript
+npx tsc --init
+```
+
+Create a basic TypeScript configuration in `tsconfig.json`:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "strict": true
+  },
+  "include": ["src/**/*"]
+}
+```
+
+### Basic Configuration
+
+Create a database connection file (`src/db/index.ts`):
+
+```typescript
+import { drizzle } from 'drizzle-orm/better-sqlite3';
+import Database from 'better-sqlite3';
+import * as schema from './schema';
+
+// Create SQLite database connection
+const sqlite = new Database('database.sqlite');
+
+// Create Drizzle ORM instance
+export const db = drizzle(sqlite, { schema });
+```
+
+### Project Structure
+
+Recommended project structure:
+
+```
+project/
+├── src/
+│   ├── db/
+│   │   ├── schema.ts       # Schema definitions
+│   │   ├── index.ts        # Database connection
+│   │   └── migrations/     # Migration files
+│   ├── services/           # Business logic
+│   └── index.ts            # Application entry point
+├── drizzle.config.ts       # Drizzle configuration
+├── database.sqlite         # SQLite database file
+├── package.json
+└── tsconfig.json
+```
+
+## Schema Definition
+
+### Defining Tables
+
+Drizzle uses a schema-first approach with TypeScript:
+
+```typescript
+// src/db/schema.ts
+import { sqliteTable, text, integer, blob } from 'drizzle-orm/sqlite-core';
+
+export const users = sqliteTable('users', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  email: text('email').notNull().unique(),
+  isActive: integer('is_active', { mode: 'boolean' }).default(true),
+  createdAt: integer('created_at', { mode: 'timestamp' })
+    .default(new Date())
+});
+
+export const profiles = sqliteTable('profiles', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  bio: text('bio'),
+  userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).unique()
+});
+```
+
+### Column Types and SQLite Mapping
+
+Drizzle provides typed column definitions for SQLite:
+
+| Drizzle Type | SQLite Type | TypeScript Type | Notes |
+|--------------|-------------|-----------------|-------|
+| `integer()` | INTEGER | `number` | Whole numbers |
+| `integer({ mode: 'boolean' })` | INTEGER | `boolean` | 1 (true) or 0 (false) |
+| `integer({ mode: 'timestamp' })` | INTEGER | `Date` | Unix timestamp |
+| `real()` | REAL | `number` | Floating-point numbers |
+| `text()` | TEXT | `string` | Text data |
+| `blob()` | BLOB | `Buffer` | Binary data |
+
+Example column definitions:
+
+```typescript
+// Column definitions
+id: integer('id').primaryKey({ autoIncrement: true }),
+name: text('name').notNull(),
+amount: real('amount').default(0),
+isActive: integer('is_active', { mode: 'boolean' }).default(true),
+createdAt: integer('created_at', { mode: 'timestamp' }).default(new Date()),
+data: blob('data')
+```
+
+### Relationships
+
+Define relationships between tables:
+
+**One-to-One:**
+
+```typescript
+// Users table
+export const users = sqliteTable('users', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name'),
+});
+
+// Profiles table
+export const profiles = sqliteTable('profiles', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  bio: text('bio'),
+  userId: integer('user_id')
+    .references(() => users.id)
+    .unique() // Ensures one-to-one
+});
+
+// Relations (type-safe relations)
+export const usersRelations = relations(users, ({ one }) => ({
+  profile: one(profiles, {
+    fields: [users.id],
+    references: [profiles.userId]
+  })
+}));
+
+export const profilesRelations = relations(profiles, ({ one }) => ({
+  user: one(users, {
+    fields: [profiles.userId],
+    references: [users.id]
+  })
+}));
+```
+
+**One-to-Many / Many-to-One:**
+
+```typescript
+// Users table
+export const users = sqliteTable('users', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name'),
+});
+
+// Posts table
+export const posts = sqliteTable('posts', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  title: text('title'),
+  content: text('content'),
+  authorId: integer('author_id').references(() => users.id)
+});
+
+// Relations
+export const usersRelations = relations(users, ({ many }) => ({
+  posts: many(posts)
+}));
+
+export const postsRelations = relations(posts, ({ one }) => ({
+  author: one(users, {
+    fields: [posts.authorId],
+    references: [users.id]
+  })
+}));
+```
+
+**Many-to-Many:**
+
+```typescript
+// Posts table
+export const posts = sqliteTable('posts', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  title: text('title'),
+});
+
+// Tags table
+export const tags = sqliteTable('tags', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').unique(),
+});
+
+// Junction table
+export const postsTags = sqliteTable('posts_tags', {
+  postId: integer('post_id').references(() => posts.id).notNull(),
+  tagId: integer('tag_id').references(() => tags.id).notNull(),
+}, (t) => ({
+  pk: primaryKey({ columns: [t.postId, t.tagId] })
+}));
+
+// Relations
+export const postsRelations = relations(posts, ({ many }) => ({
+  tags: many(tags, { through: postsTags })
+}));
+
+export const tagsRelations = relations(tags, ({ many }) => ({
+  posts: many(posts, { through: postsTags })
+}));
+```
+
+### Indices and Constraints
+
+Define indices and constraints for performance and data integrity:
+
+```typescript
+import { sqliteTable, text, integer, index, uniqueIndex, primaryKey } from 'drizzle-orm/sqlite-core';
+
+export const users = sqliteTable('users', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  firstName: text('first_name').notNull(),
+  lastName: text('last_name').notNull(),
+  email: text('email').notNull().unique(),
+  role: text('role').default('user')
+}, (table) => {
+  return {
+    // Create an index on firstName and lastName
+    nameIdx: index('name_idx').on(table.firstName, table.lastName),
+    // Create a unique index on email
+    emailIdx: uniqueIndex('email_idx').on(table.email),
+    // Create composite index
+    roleEmailIdx: index('role_email_idx').on(table.role, table.email)
+  };
+});
+```
+
+## Database Operations
+
+### CRUD Operations
+
+Basic Create, Read, Update, Delete operations:
+
+```typescript
+import { db } from './db';
+import { users } from './db/schema';
+import { eq } from 'drizzle-orm';
+
+// Create
+async function createUser(name: string, email: string) {
+  return await db.insert(users)
+    .values({ name, email })
+    .returning();
+}
+
+// Read - get all users
+async function getAllUsers() {
+  return await db.select().from(users);
+}
+
+// Read - get user by id
+async function getUserById(id: number) {
+  return await db.select()
+    .from(users)
+    .where(eq(users.id, id))
+    .get(); // For a single result
+}
+
+// Update
+async function updateUser(id: number, data: { name?: string, email?: string }) {
+  return await db.update(users)
+    .set(data)
+    .where(eq(users.id, id))
+    .returning();
+}
+
+// Delete
+async function deleteUser(id: number) {
+  return await db.delete(users)
+    .where(eq(users.id, id));
+}
+```
+
+### Query Building
+
+Drizzle provides a powerful and type-safe query builder:
+
+```typescript
+import { db } from './db';
+import { users, posts } from './db/schema';
+import { and, eq, like, desc, sql } from 'drizzle-orm';
+
+// Complex filtering
+const activeAdmins = await db.select()
+  .from(users)
+  .where(
+    and(
+      eq(users.isActive, true),
+      eq(users.role, 'admin')
+    )
+  );
+
+// Pattern matching
+const searchUsers = await db.select()
+  .from(users)
+  .where(like(users.email, '%example.com'));
+
+// Ordering
+const orderedUsers = await db.select()
+  .from(users)
+  .orderBy(desc(users.createdAt));
+
+// Limit and offset
+const paginatedUsers = await db.select()
+  .from(users)
+  .limit(10)
+  .offset(20);
+
+// Joins with relations
+const usersWithPosts = await db.query.users.findMany({
+  with: {
+    posts: true
+  }
+});
+
+// Aggregations
+const userStats = await db.select({
+  role: users.role,
+  count: sql<number>`count(*)`,
+})
+.from(users)
+.groupBy(users.role);
+```
+
+### Transactions
+
+Ensure data integrity with transactions:
+
+```typescript
+import { db } from './db';
+import { users, profiles } from './db/schema';
+
+// Using db.transaction
+const result = await db.transaction(async (tx) => {
+  // Create user
+  const [user] = await tx.insert(users)
+    .values({ name: 'John Doe', email: 'john@example.com' })
+    .returning();
+  
+  // Create profile for the user
+  const profile = await tx.insert(profiles)
+    .values({ userId: user.id, bio: 'Developer' })
+    .returning();
+  
+  return { user, profile };
+});
+
+// Alternative method with better-sqlite3
+import Database from 'better-sqlite3';
+const sqlite = new Database('database.sqlite');
+
+function createUserWithProfile(name: string, email: string, bio: string) {
+  const db = drizzle(sqlite);
+  
+  // Start transaction
+  sqlite.prepare('BEGIN TRANSACTION').run();
+  
+  try {
+    // Insert user
+    const [user] = db.insert(users)
+      .values({ name, email })
+      .returning()
+      .all();
+    
+    // Insert profile
+    const [profile] = db.insert(profiles)
+      .values({ userId: user.id, bio })
+      .returning()
+      .all();
+    
+    // Commit transaction
+    sqlite.prepare('COMMIT').run();
+    return { user, profile };
+  } catch (error) {
+    // Rollback on error
+    sqlite.prepare('ROLLBACK').run();
+    throw error;
+  }
+}
+```
+
+## Migrations
+
+### Setting Up Migrations
+
+Configure Drizzle Kit for migrations:
+
+1. Create `drizzle.config.ts` in the project root:
+
+```typescript
+import type { Config } from 'drizzle-kit';
+
+export default {
+  schema: './src/db/schema.ts',
+  out: './src/db/migrations',
+  driver: 'better-sqlite',
+  dbCredentials: {
+    url: './database.sqlite',
+  },
+} satisfies Config;
+```
+
+2. Add migration scripts to `package.json`:
+
+```json
+"scripts": {
+  "generate": "drizzle-kit generate",
+  "migrate": "ts-node src/db/migrate.ts",
+  "studio": "drizzle-kit studio"
+}
+```
+
+3. Create a migration runner (`src/db/migrate.ts`):
+
+```typescript
+import { drizzle } from 'drizzle-orm/better-sqlite3';
+import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
+import Database from 'better-sqlite3';
+
+// Initialize database connection
+const sqlite = new Database('database.sqlite');
+const db = drizzle(sqlite);
+
+// Run migrations
+console.log('Running migrations...');
+migrate(db, { migrationsFolder: 'src/db/migrations' });
+console.log('Migrations completed!');
+```
+
+### Creating and Running Migrations
+
+**Generate migrations:**
+
+```bash
+npm run generate
+```
+
+This analyzes your schema and generates SQL migration files in the specified output directory.
+
+**Apply migrations:**
+
+```bash
+npm run migrate
+```
+
+**Inspect database with Drizzle Studio:**
+
+```bash
+npm run studio
+```
+
+### SQLite Migration Considerations
+
+When working with SQLite migrations:
+
+1. SQLite has limitations with ALTER TABLE operations:
+   - Cannot drop columns
+   - Cannot change column types
+   - Cannot rename columns with standard ALTER TABLE
+
+2. For complex changes, Drizzle generates multi-step migrations:
+   - Creates a temporary table with the new schema
+   - Copies data from the old table to the new one
+   - Drops the old table
+   - Renames the new table to the original name
+
+3. Always review generated migrations before applying them, especially for production environments.
+
+4. Backup your database before running migrations in production.
+
+## Best Practices
+
+### Performance Optimization
+
+1. **Use appropriate indices:**
+
+```typescript
+export const users = sqliteTable('users', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  email: text('email').notNull()
+}, (table) => ({
+  emailIdx: index('email_idx').on(table.email) // Create index for frequently queried column
+}));
+```
+
+2. **Select only needed columns:**
+
+```typescript
+// Only select needed fields
+const userEmails = await db
+  .select({ id: users.id, email: users.email })
+  .from(users);
+```
+
+3. **Use prepared statements for repeated queries:**
+
+```typescript
+// With better-sqlite3
+const getUserStmt = sqlite.prepare(`
+  SELECT * FROM users WHERE id = ?
+`);
+
+function getUser(id: number) {
+  return getUserStmt.get(id);
+}
+```
+
+4. **Leverage batch operations:**
+
+```typescript
+// Batch insert
+await db.insert(users).values([
+  { name: 'User 1', email: 'user1@example.com' },
+  { name: 'User 2', email: 'user2@example.com' },
+  { name: 'User 3', email: 'user3@example.com' }
+]);
+```
+
+### SQLite-Specific Considerations
+
+1. **Enable WAL mode for better concurrency:**
+
+```typescript
+// After creating database connection
+sqlite.exec('PRAGMA journal_mode = WAL;');
+```
+
+2. **Transaction and synchronization settings:**
+
+```typescript
+// Better performance, slightly less durability
+sqlite.exec('PRAGMA synchronous = NORMAL;');
+
+// Default: Full durability, slower writes
+sqlite.exec('PRAGMA synchronous = FULL;');
+```
+
+3. **Memory optimizations:**
+
+```typescript
+// Cache size in pages (default page size is 4KB)
+sqlite.exec('PRAGMA cache_size = 10000;');
+
+// Temp storage in memory instead of file
+sqlite.exec('PRAGMA temp_store = MEMORY;');
+```
+
+### Security Implementation
+
+1. **Use parameterized queries:**
+
+```typescript
+// Using Drizzle's query builder (automatically parameterized)
+const user = await db.select()
+  .from(users)
+  .where(eq(users.email, userInput));
+
+// With better-sqlite3
+const stmt = sqlite.prepare('SELECT * FROM users WHERE email = ?');
+const user = stmt.get(userInput);
+
+// AVOID string concatenation
+// BAD: sqlite.exec(`SELECT * FROM users WHERE email = '${userInput}'`);
+```
+
+2. **Secure file permissions:**
+
+```typescript
+import { chmod } from 'fs/promises';
+await chmod('database.sqlite', 0o600); // Owner read/write only
+```
+
+3. **Encryption options (with SQLCipher):**
+
+```typescript
+// Using SQLCipher extension
+import Database from '@journeyapps/sqlcipher';
+
+const sqlite = new Database('encrypted.db');
+sqlite.pragma('key = \'your-encryption-key\'');
+
+// Use drizzle with the encrypted database
+const db = drizzle(sqlite);
+```
+
+## Testing
+
+### In-Memory Database Testing
+
+Set up in-memory databases for fast, isolated tests:
+
+```typescript
+// src/db/test.ts
+import { drizzle } from 'drizzle-orm/better-sqlite3';
+import Database from 'better-sqlite3';
+import * as schema from './schema';
+
+export function createTestDb() {
+  // Create in-memory database
+  const sqlite = new Database(':memory:');
+  
+  // Create Drizzle instance
+  const db = drizzle(sqlite, { schema });
+  
+  // Run migrations or schema setup
+  sqlite.exec(`
+    CREATE TABLE users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL UNIQUE,
+      is_active INTEGER DEFAULT 1
+    );
+    -- Add other tables as needed
+  `);
+  
+  return { db, sqlite };
+}
+```
+
+### Test Data Setup
+
+Set up test data with fixtures:
+
+```typescript
+// test/fixtures.ts
+import { users } from '../src/db/schema';
+
+export async function createTestUsers(db) {
+  return await db.insert(users).values([
+    { name: 'Test User 1', email: 'test1@example.com' },
+    { name: 'Test User 2', email: 'test2@example.com' }
+  ]);
+}
+
+// In your test file
+import { createTestDb } from '../src/db/test';
+import { createTestUsers } from './fixtures';
+import { users } from '../src/db/schema';
+
+describe('User Tests', () => {
+  let db, sqlite;
+  
+  beforeEach(() => {
+    // Create fresh test database for each test
+    const testDb = createTestDb();
+    db = testDb.db;
+    sqlite = testDb.sqlite;
+    
+    // Seed with test data
+    createTestUsers(db);
+  });
+  
+  afterEach(() => {
+    // Close database connection
+    sqlite.close();
+  });
+  
+  test('should find users', async () => {
+    const allUsers = await db.select().from(users);
+    expect(allUsers.length).toBe(2);
+  });
+});
+```
+
+## Common Issues and Solutions
+
+### Connection Problems
+
+**Issue: Database locked**
+
+Solution: SQLite allows only one writer at a time.
+- Use WAL mode for better concurrency: `PRAGMA journal_mode = WAL;`
+- Ensure connections are properly closed
+- Add timeout settings:
+
+```typescript
+import Database from 'better-sqlite3';
+
+const sqlite = new Database('database.sqlite', {
+  timeout: 5000 // 5 seconds
+});
+```
+
+**Issue: Database file not found**
+
+Solution:
+- Use absolute paths for deployment environments
+- Ensure directory permissions are correct
+- Check file path in your configuration
+
+### Migration Errors
+
+**Issue: Migration inconsistency**
+
+Solution:
+- Check the `__drizzle_migrations` table in your database
+- For development, you might need to delete this table to reset migrations
+
+```typescript
+// Only for development environments!
+sqlite.exec('DELETE FROM __drizzle_migrations');
+```
+
+**Issue: SQLite ALTER TABLE limitations**
+
+Solution:
+- Let Drizzle Kit handle complex schema changes
+- Always preview and test migrations before applying them
+- For manual control, use the table recreation pattern with transaction
+
+### Concurrency Limitations
+
+**Issue: Database is locked**
+
+Solution: Understand SQLite's concurrency model
+- Only one process can write at a time
+- Multiple readers are allowed
+- Implement retry logic:
+
+```typescript
+async function executeWithRetry(fn, maxRetries = 3, delay = 100) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (error.message.includes('database is locked') && attempt < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, delay * attempt));
+        continue;
+      }
+      throw error;
+    }
+  }
+}
+
+// Usage
+await executeWithRetry(async () => {
+  // Your database operation here
+  return db.insert(users).values({ name: 'John', email: 'john@example.com' });
+});
+```
