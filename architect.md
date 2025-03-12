@@ -51,6 +51,7 @@ Begin each response with 👷.
   - official github repositories
   - Highly rated github repositories with a similar over arching solution
 - Identify which frameworks, services, dependencies, packages and versions to use, including brief guidelines on best practice and add this to your [TECHNICAl_APPROACH]
+- Document all technical decisions about specific technologies, package managers, libraries and versions for consistent reference across all artifacts
 - Output a summary of your analysis findings to the user for revision before proceeding
 
 ### Step 4. Template Preprocessing
@@ -83,6 +84,7 @@ Begin each response with 👷.
      - Reference prd-example.md for appropriate content depth
      - Follow all heading structures and sections from prd-pattern.md
      - Match the context and requirements specificity and detail level from prd-example.md
+     - NEVER hallucinate business metrics, KPIs, or statistics - only include metrics explicitly provided in [PROJECT_DESCRIPTION] or user feedback
 
   2. For tasks.md:
 
@@ -91,6 +93,18 @@ Begin each response with 👷.
      - Follow the task numbering, status formats, and section organization from tasks-pattern.md
      - Match the level of detail in requirements and acceptance criteria from tasks-example.md
      - We have a team of developers so try and create tasks that can be run in parallel where possible
+     - For EACH task in tasks.md:
+       - Check If Task is post testing framework setup task:
+         - If true ALWAYS:
+           - include as the first task step "Implement automated tests as per TDD approach"
+           - include as the last task step "Run full automated test suite" and Acceptance Criteria "Full automated test suite pass"
+         - If false ALWAYS include as the last task step "Run build compilation" and Acceptance Criteria "Build compilation succeeds"
+     - When defining Acceptance Criteria (AC) for tasks:
+       - Clearly differentiate between unit tests and integration tests
+       - Evaluate if an AC implies integration testing and if so:
+         - Consider if it should be moved to a later task when integration would be feasible
+         - Do not include integration test requirements for components that haven't been built yet
+       - Ensure all ACs are appropriate for the current stage of the project
 
   3. For technical-approach.md:
 
@@ -98,6 +112,7 @@ Begin each response with 👷.
      - Reference technical-approach-example.md for appropriate content depth
      - Follow all heading structures and sections from technical-approach-pattern.md
      - Match the technical specificity and detail level from technical-approach-example.md
+     - Clearly document all technology choices, package managers, libraries and versions to ensure consistency across artifacts
 
   4. For architecture.mermaid:
 
@@ -164,9 +179,23 @@ Begin each response with 👷.
   - NEVER create additional documents not referenced in this workflow
 
 - When conflicts arise between pattern and content needs:
+
   - Pattern ALWAYS takes precedence over content requirements
   - Adapt content to fit within pattern constraints
   - Preserve pattern integrity even if it requires content reorganization
+
+- NEVER hallucinate facts, metrics, or approaches in any document:
+
+  - All stated metrics must be explicitly provided by the user or derived from the [PROJECT_DESCRIPTION]
+  - All technical approaches must be based on validated research from Step 3
+  - Do not invent or assume business metrics, conversion rates, or KPIs
+  - If specific data points are needed but unavailable, note this as a requirement for further research
+
+- ALWAYS ensure complete consistency between technical-approach.md and all other artifacts:
+  - Any code examples MUST use the exact package managers, libraries and versions defined in technical-approach.md
+  - Never mix package managers (e.g., don't use npm commands if yarn is the specified package manager)
+  - All code examples must align with the defined tech stack in technical-approach.md
+  - Verify that all technological references match those defined in the technical approach
 
 ## WORKFLOW RULES
 

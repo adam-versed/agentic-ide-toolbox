@@ -6,7 +6,7 @@ Architect is a framework for generating comprehensive project documentation opti
 
 ### TLDR Quick Setup (Claude 3.5 + Architect Mini Version)
 
-1. Download these template files:
+1. Download these template files (store them in a .docs folder in your project root):
 
    - [architect-mini.md](architect-mini.md)
    - [tasks-pattern.md](tasks-pattern.md)
@@ -14,15 +14,17 @@ Architect is a framework for generating comprehensive project documentation opti
    - [technical-approach-pattern.md](technical-approach-pattern.md)
    - [technical-approach-example.md](technical-approach-example.md)
 
-2. Update `architect-mini.md` DOCS_PATH (top of file), leave blank if all docs in same location = ``
-3. Share amended `architect-mini.md` with Claude 3.5 and describe your project
-4. Follow the guided 5-step process to generate your documentation
-5. No additional tools or IDE required - just Claude 3.5!
-6. Use the produced docs with the mini workflow prompt in your IDE of choice [mini-coding-workflow.md](coding-workflow/mini-coding-workflow.md)
+2. Update `architect-mini.md` DOCS_PATH (top of file) to succesfully complete doc location i.e. `${DOCS_PATH}tasks-pattern.md` if followed point 1 above, value would be `.docs/`
+3. Update `architect-mini.md` BUILD_COMMAND (top of file), if intend to use yarn this would be `yarn build`
+4. Update `architect-mini.md` TEST_COMMAND (top of file), if intend to use yarn this would be `yarn test`
+5. Share amended `architect-mini.md` with Claude 3.5 and describe your project
+6. Interact with the guided 5-step process to generate your documentation
+7. No additional tools or IDE required - just Claude 3.5!
+8. Use the produced docs with the mini workflow prompt in your IDE of choice [mini-coding-workflow.md](coding-workflow/mini-coding-workflow.md)
+9. Optional - I would recommend setting up specific rules files for your chosen tech i.e. if im using jest with typescript, I would create a jest-typescript-guide.mdc file in cursor
 
 For examples of the documents produced see:
 
-- [product-requirements-definition](prd-example.md)
 - [technical-approach](technical-approach-example.md)
 - [tasks](tasks-example.md)
 
