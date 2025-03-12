@@ -14,13 +14,20 @@ Architect is a framework for generating comprehensive project documentation opti
    - [technical-approach-pattern.md](technical-approach-pattern.md)
    - [technical-approach-example.md](technical-approach-example.md)
 
-2. Update `architect-mini.md` DOCS_PATH (top of file) - if `${DOCS_PATH}tasks-pattern.md` then value would be `.docs/`
+2. Update `architect-mini.md` DOCS_PATH (top of file):
+
+- If followed point 1 then value would be `.docs/` to complete `${DOCS_PATH}tasks-pattern.md`
+
 3. Share amended `architect-mini.md` with Claude 3.5 and describe your project
 4. Interact with the guided 5-step process to generate your documentation
-5. Use the produced docs with the mini workflow prompt in your IDE of choice [mini-coding-workflow.md](coding-workflow/mini-coding-workflow.md)
-6. Update `mini-coding-workflow.md` BUILD_COMMAND (top of file), if intend to use yarn this would be `yarn build`
-7. Update `mini-coding-workflow.md` TEST_COMMAND (top of file), if intend to use yarn this would be `yarn test`
-8. (Optional) Setup specific tech rules in for your IDE (for cursor see [MDC-Examples](mdc-files/))
+5. Use the produced docs with the [mini-coding-workflow.md](coding-workflow/mini-coding-workflow.md) prompt in your IDE of choice
+
+- Update it as follows:
+
+  - BUILD_COMMAND (top of file), if intend to use yarn this would be `yarn build`
+  - TEST_COMMAND (top of file), if intend to use yarn this would be `yarn test`
+
+6. (Optional) Setup specific tech rules in for your IDE (for cursor see [MDC-Examples](mdc-files/))
 
 For examples of the documents produced see:
 
