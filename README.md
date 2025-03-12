@@ -136,7 +136,7 @@ project-root/
 - If you require more detail or different formating:
   - alter the corresponding pattern and example md files to your taste
   - add additional documents to generation process
-- Maybe additional additional steps to the analysis step i.e. add a github search through MCP
+- Maybe add additional steps to the analysis step i.e. add a github search through MCP
 
 ## Alternative LLM Usage
 
