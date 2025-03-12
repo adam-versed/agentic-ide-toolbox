@@ -15,12 +15,12 @@ Architect is a framework for generating comprehensive project documentation opti
    - [technical-approach-example.md](technical-approach-example.md)
 
 2. Update `architect-mini.md` DOCS_PATH (top of file) - if `${DOCS_PATH}tasks-pattern.md` then value would be `.docs/`
-3. Update `architect-mini.md` BUILD_COMMAND (top of file), if intend to use yarn this would be `yarn build`
-4. Update `architect-mini.md` TEST_COMMAND (top of file), if intend to use yarn this would be `yarn test`
-5. Share amended `architect-mini.md` with Claude 3.5 and describe your project
-6. Interact with the guided 5-step process to generate your documentation
-7. Use the produced docs with the mini workflow prompt in your IDE of choice [mini-coding-workflow.md](coding-workflow/mini-coding-workflow.md)
-8. Optional - I would recommend setting up specific rules files for your chosen tech i.e. if using jest with typescript, create a jest-typescript-guide.mdc file in cursor (see [MDC-Examples](mdc-files/))
+3. Share amended `architect-mini.md` with Claude 3.5 and describe your project
+4. Interact with the guided 5-step process to generate your documentation
+5. Use the produced docs with the mini workflow prompt in your IDE of choice [mini-coding-workflow.md](coding-workflow/mini-coding-workflow.md)
+6. Update `mini-coding-workflow.md` BUILD_COMMAND (top of file), if intend to use yarn this would be `yarn build`
+7. Update `mini-coding-workflow.md` TEST_COMMAND (top of file), if intend to use yarn this would be `yarn test`
+8. (Optional) Setup specific tech rules in for your IDE (for cursor see [MDC-Examples](mdc-files/))
 
 For examples of the documents produced see:
 
