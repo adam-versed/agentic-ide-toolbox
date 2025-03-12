@@ -18,7 +18,11 @@ Architect is a framework for generating comprehensive project documentation opti
 
 - If followed point 1 then value would be `.docs/` to complete `${DOCS_PATH}tasks-pattern.md`
 
-3. Share amended `architect-mini.md` with Claude 3.5 and describe your project
+3. Share amended `architect-mini.md` with Claude 3.5 capable client with following MCP support:
+
+- [Sequential thinking](https://github.com/arben-adm/mcp-sequential-thinking)
+- [Brave search](https://github.com/arben-adm/brave-mcp-search)
+
 4. Interact with the guided 5-step process to generate your documentation
 5. Use the produced docs with the [mini-coding-workflow.md](coding-workflow/mini-coding-workflow.md) prompt in your IDE of choice
 
