@@ -11,6 +11,7 @@ Thumbs.db
 .idea/
 .vscode/
 .cursor/
+.clogs/
 *.swp
 *.swo
 *~
@@ -70,4 +71,5 @@ coverage/
 
 # Misc
 .tmp/
-.temp/ 
+.temp/
+.project-docs/
