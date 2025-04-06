@@ -11,7 +11,7 @@ Thumbs.db
 .idea/
 .vscode/
 .cursor/
-.clogs/
+.logs/
 *.swp
 *.swo
 *~
