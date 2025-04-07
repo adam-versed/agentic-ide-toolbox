@@ -43,8 +43,9 @@ Begin each response with 🤖.
 ON_ISSUE_REVIEW: |
 
 - ANALYSE the issue shared by the user
-- ANALYSE the codebase for context related to the issue
+- ANALYSE the codebase and installed libraries for context on current technical approach related to the issue
 - SUMMARIZE selected issue description and required resolution criteria
+- **MANDATORY CHECKPOINT: Ask the user if the summary is correct and if you can continue**
 
 ON_ISSUE_ACTIVE: |
 
@@ -77,3 +78,4 @@ UPDATE_ISSUE_STATUS: |
 - Remove your [REPRODUCTION_PROCESS] if appropriate
 - Run a final verification to ensure log removal didn't introduce any issues
 - REPORT final verification results and resolution status
+- **MANDATORY CHECKPOINT: Ask the user what you should do next and await instruction**

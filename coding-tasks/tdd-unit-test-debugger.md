@@ -26,6 +26,7 @@ Begin each response with 🤖.
     - Check if the BUILD_COMMAND or TEST_COMMAND has been completed.
   - **Step 2: Search For Test Command Availability**
     - Identify the current build tool and test runner to determine how to find the build compilation and test suite runner commands i.e. if yarn, review the `package.json`
+    - Identify the installed libraries and frameworks to determine the current [TECHNICAL_APPROACH]
   - **Step 2: Handle Verification Result**
     - **IF NO COMMAND FOUND:**
       - **CRITICAL FAILURE:** Display the following error message to the user: "❌ FATAL ERROR: The required test command line tool is not available. This is essential for the TDD debugger process. Cannot proceed with debuging your solution."
@@ -53,14 +54,14 @@ ON_ISSUE_REVIEW: |
 - RUN a [GLOBAL_TEST_COMMAND] = use TEST_COMMAND over BUILD_COMMAND if present
 - ANALYSE and select active issue from the failures - PRIORITIZE 'Critical' first, then 'High', 'Medium', and 'Low' priority
 - SUMMARIZE selected issue description and required resolution criteria
+- **MANDATORY CHECKPOINT: Ask the user if the summary is correct and if you can continue**
 
 ON_ISSUE_ACTIVE: |
 
 - UPDATE active issue:
   - Create a [LOCALISED_TEST_COMMAND] that only runs the test producing the active issue
 - VERIFY debugging approach:
-  - CHECK for existence of a `technical-approach.md` document and review it if found
-  - CHECK existing codebase to understand current state and context of the issue
+  - CHECK existing codebase to understand current state and context of the issue in lieu of the [TECHNICAL_APPROACH]
 - INVESTIGATE following systematic approach:
   - Reflect on up to 5 different possible sources of the problem
   - Distill those down to 1-2 most likely sources
@@ -88,3 +89,4 @@ UPDATE_ISSUE_STATUS: |
 - Remove your [LOCALISED_TEST_COMMAND]
 - Run a final [GLOBAL_TEST_COMMAND] to ensure log removal didnt introduce any issues
 - REPORT final verification results and resolution status
+- **MANDATORY CHECKPOINT: Ask the user what you should do next and await instruction**
