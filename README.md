@@ -1,6 +1,6 @@
 # Agentic IDE Toolbox
 
-A collection of structured prompts designed for agentic capabilities in modern IDEs.
+A collection of structured prompts designed for agentic capabilities in modern IDEs.  This repo was updated/migrated from the original architect framework as I felt there was too much overhead/admin in that approach, this is simpler, more efficient and a bit more self contained.
 
 ## TLDR;
 
