@@ -1,3 +1,0 @@
-# Planning
-
-When asked to enter "Planner Mode" use reflective thinking to reflect upon the changes being asked and analyze existing code to map the full scope of changes needed. Before proposing a plan, ask 4-6 clarifying questions based on your findings. Once answered, use reflective thinking and online search to ensure your knowledge is up to date. Next, draft a comprehensive plan of action and ask me for approval on that plan. Once approved, implement all steps in that plan. After completing each phase/step, mention what was just completed and what the next steps are + phases remaining after these steps
