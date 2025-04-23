@@ -1,6 +1,6 @@
 # Agentic IDE Toolbox
 
-A collection of structured prompts designed for agentic capabilities in modern IDEs.  This repo was updated/migrated from the original architect framework as I felt there was too much overhead/admin in that approach, this is simpler, more efficient and a bit more self contained.
+A collection of structured prompts designed for agentic capabilities in modern IDEs. This repo was updated/migrated from the original architect framework as I felt there was too much overhead/admin in that approach, this is simpler, more efficient and a bit more self contained.
 
 ## TLDR;
 
@@ -25,6 +25,15 @@ These prompts are designed to be adaptable across different agentic coding tools
 
 These prompts are designed to be flexible templates. Feel free to modify them to better suit your specific development environment and workflow requirements.
 
+## Extended Workflow Prompts
+
+The following new prompts have been added to enhance the agentic IDE experience:
+
+- `orchestrator.md` (located in `planning-tasks/`): Provides an orchestration workflow for solution design, including dependency verification, task prioritisation, and building comprehensive project context.
+- `tdd-task-coder.md` (located in `coding-tasks/`): Tailored for test-driven development, guiding developers to create tests first which drive their implementation.
+
+Note: `csr-solution-designer.md`, `orchestrator.md`, and `tdd-task-coder.md` work seamlessly together and will be updated to trigger each other automatically when Cursor supports mode switching. Additionally, by limiting the context provided for each task to a need-to-know basis, we lower operational costs; hence, the introduction of the `active-task.md` concept.
+
 ## Repository Structure
 
 ```
@@ -43,15 +52,21 @@ agentic-ide-toolbox/
 
 - **Solution Designer** (`planning-tasks/csr-solution-designer.md` or the roo variant): Guides an AI assistant through creating comprehensive solution documentation including product requirements, technical approach, and task breakdown.
 
+- **Orchestration** (`planning-tasks/orchestrator.md`): Provides an orchestration workflow for task implementation, including dependency verification, task prioritisation, and building comprehensive project context - best paired with the solution-designer.md and tdd-task-coder.md.
+
 ### Coding Tasks
 
-- **Test-Driven Development** (`coding-tasks/tdd-coder.md`): Structured workflow for implementing features using test-driven development methodology - best paired with the solution-designer.md task output.
+- **Test-Driven Development & Orchestration** (`coding-tasks/tdd-coder.md`): Structured workflow for implementing features using test-driven development methodology, orchestrator and feature implementation - best paired with the solution-designer.md task output.
 - **Test-Driven Debugging** (`coding-tasks/tdd-unit-test-debugger.md`): Systematic approach for debugging code issues using tests to verify fixes.
+- **Test-Driven Development** (`coding-tasks/tdd-task-coder.md`): Structured workflow for implementat feature using test-driven development methodology - simplified version fo tdd-coder that only focuses on feature implementation - best paired with the orchestrator.md.
+
+### Documentation Tasks
+
+- **Knowledge base creator** (`documentation-tasks/kb-generator.md`): Facilitates the generation of a technical knowledge base, offering detailed documentation with best practices, examples, and troubleshooting guidance.
 
 ### Coming Soon
 
 - UX Design prompts
-- Documentation generators
 - And more...
 
 ## Contributing
