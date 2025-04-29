@@ -54,6 +54,8 @@ agentic-ide-toolbox/
 
 - **Orchestration** (`planning-tasks/orchestrator.md`): Provides an orchestration workflow for task implementation, including dependency verification, task prioritisation, and building comprehensive project context - best paired with the solution-designer.md and tdd-task-coder.md.
 
+- **prd-creator** (`planning-tasks/orchestrator.md`): Guides an AI assistant through creation of product requirements document, is opinionated about initial prioritsation based on the project delivery type (prototype vs full product)
+
 ### Coding Tasks
 
 - **Test-Driven Development & Orchestration** (`coding-tasks/tdd-coder.md`): Structured workflow for implementing features using test-driven development methodology, orchestrator and feature implementation - best paired with the solution-designer.md task output.
