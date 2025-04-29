@@ -20,19 +20,11 @@ This process uses available tools explicitly to ensure a completely controlled s
 
 ### Step 1: Dependency Verification
 
-1. Use the `use_mcp_tool` to verify the availability of required MCP tools:
+1. Use the `brave_web_search` tool to verify the availability of required web search functionality:
 
    ```
-   <use_mcp_tool>
-   <server_name>brave-search</server_name>
-   <tool_name>brave_web_search</tool_name>
-   <arguments>
-   {
-     "query": "test query",
-     "count": 1
-   }
-   </arguments>
-   </use_mcp_tool>
+   query: "test query",
+   count: 1
    ```
 
 2. If the result shows an error, display this message:
@@ -44,38 +36,30 @@ This process uses available tools explicitly to ensure a completely controlled s
 
 1. State explicitly: "Now executing Step 2: Set Initial Context"
 
-2. If [PROJECT_DESCRIPTION] is unclear, use `ask_followup_question`:
+2. If [PROJECT_DESCRIPTION] is unclear, ask a follow-up question:
 
-   ```
-   <ask_followup_question>
-   <question>Please provide a detailed description of your project, including its purpose and any specific requirements.</question>
-   <follow_up>
-   <suggest>I need to build a web application that...</suggest>
-   <suggest>I'm looking to create a mobile app for...</suggest>
-   <suggest>I want to develop an API that will...</suggest>
-   </follow_up>
-   </ask_followup_question>
-   ```
+   "Please provide a detailed description of your project, including its purpose and any specific requirements."
 
-3. Use `ask_followup_question` to determine if the project is a [PERMANENT] solution (MVP or full delivery) or an [IMPERMANENT] solution (proof of concept or prototype) to determine the [PROJECT_DELIVERY]:
+   Suggested responses:
 
-   ```
-   <ask_followup_question>
-   <question>Is this project intended as a permanent solution (MVP/full product) or an impermanent solution (proof of concept/prototype)?</question>
-   <follow_up>
-   <suggest>Permanent solution (MVP or full product)</suggest>
-   <suggest>Impermanent solution (proof of concept or prototype)</suggest>
-   </follow_up>
-   </ask_followup_question>
-   ```
+   - "I need to build a web application that..."
+   - "I'm looking to create a mobile app for..."
+   - "I want to develop an API that will..."
+
+3. Ask if the project is a [PERMANENT] solution (MVP or full delivery) or an [IMPERMANENT] solution (proof of concept or prototype) to determine the [PROJECT_DELIVERY]:
+
+   "Is this project intended as a permanent solution (MVP/full product) or an impermanent solution (proof of concept/prototype)?"
+
+   Suggested responses:
+
+   - "Permanent solution (MVP or full product)"
+   - "Impermanent solution (proof of concept or prototype)"
 
 4. Form [PROJECT_CONTEXT] from [PROJECT_DESCRIPTION] + [PROJECT_DELIVERY]
 
 5. Present the project context for confirmation, items in square brackets should be replaced with content or treated as logic gates for their inner content:
 
-   ```
-   <ask_followup_question>
-   <question>I've determined the following project context. Is this correct?
+   "I've determined the following project context. Is this correct?
 
    Project aim: [PROJECT_AIM]
    Problem it solves: [PROBLEM_DESCRIPTION]
@@ -83,27 +67,26 @@ This process uses available tools explicitly to ensure a completely controlled s
    Tech constraints:
    [USER_MENTIONED_TECH_CONSTRAINTS]
    [DEFAULT_TECH_CONSTRAINTS]:
+
    - Prefer established libraries over bespoke code implementations
    - Prefer established starter projects or boiler plate code from highly rated git repos over creating from
    - Implement SOLID, DRY and Atomic design principles
-   [PERMANENT_TECH_CONSTRAINTS]:
-    - Be secure
-    - Be performant
-    - Be scalable
-    - Implement test drive development
-   [IMPERMANENT_TECH_CONSTRAINTS]:
-    - Identify pre-built libraries and services that lessen development time/effort
-    - Prioritise speed over cost
-    </question>
-   <follow_up>
-   <suggest>Yes, this context is correct</suggest>
-   <suggest>No, the project aim should be...</suggest>
-   <suggest>No, the problem it solves is actually...</suggest>
-   <suggest>No, there are additional user types...</suggest>
-   <suggest>No, please add this tech constraint...</suggest>
-   </follow_up>
-   </ask_followup_question>
-   ```
+     [PERMANENT_TECH_CONSTRAINTS]:
+   - Be secure
+   - Be performant
+   - Be scalable
+   - Implement test drive development
+     [IMPERMANENT_TECH_CONSTRAINTS]:
+   - Identify pre-built libraries and services that lessen development time/effort
+   - Prioritise speed over cost"
+
+   Suggested responses:
+
+   - "Yes, this context is correct"
+   - "No, the project aim should be..."
+   - "No, the problem it solves is actually..."
+   - "No, there are additional user types..."
+   - "No, please add this tech constraint..."
 
 ### Step 3: Define Features Using MoSCoW Framework
 
@@ -111,31 +94,32 @@ This process uses available tools explicitly to ensure a completely controlled s
 
 2. Form and present a list of prioritized [FEATURES] using the MoSCoW framework:
 
-   ```
-   <ask_followup_question>
-   <question>I've defined the following MoSCoW prioritized features for your project:
+   "I've defined the following MoSCoW prioritized features for your project:
 
    Must Have:
+
    - [MUST_HAVE_FEATURES]
 
    Should Have:
+
    - [SHOULD_HAVE_FEATURES]
 
    Could Have:
+
    - [COULD_HAVE_FEATURES]
 
    Won't Have:
+
    - [WONT_HAVE_FEATURES]
 
-   Are these features and their prioritization correct?</question>
-   <follow_up>
-   <suggest>Yes, the features and prioritization are correct</suggest>
-   <suggest>No, [FEATURE] should be moved from [CURRENT_CATEGORY] to [NEW_CATEGORY]</suggest>
-   <suggest>No, please add [NEW_FEATURE] to [CATEGORY]</suggest>
-   <suggest>No, please remove [FEATURE] from [CATEGORY]</suggest>
-   </follow_up>
-   </ask_followup_question>
-   ```
+   Are these features and their prioritization correct?"
+
+   Suggested responses:
+
+   - "Yes, the features and prioritization are correct"
+   - "No, [FEATURE] should be moved from [CURRENT_CATEGORY] to [NEW_CATEGORY]"
+   - "No, please add [NEW_FEATURE] to [CATEGORY]"
+   - "No, please remove [FEATURE] from [CATEGORY]"
 
 ### Step 4: Technical Approach Analysis
 
@@ -167,19 +151,19 @@ This process uses available tools explicitly to ensure a completely controlled s
 
 Total weighted score must exceed 4.0 for selected technologies.
 
-4. USE `brave_web_search` only: Search for latest versions and documentation of candidate technologies using the `brave-search` MCP server.
+4. USE `web_search`: Search for latest versions and documentation of candidate technologies.
 
-   - Format: Use the `brave_web_search` tool via `use_mcp_tool` with the query: "[technology_name] latest version documentation"
+   - Format: Use the `web_search` tool with the query: "[technology_name] latest version documentation"
    - Document findings with URLs and date of search
 
-5. USE `brave_web_search` only: Search for starter templates and boilerplates using the `brave-search` MCP server.
+5. USE `web_search`: Search for starter templates and boilerplates.
 
-   - Format: Use the `brave_web_search` tool via `use_mcp_tool` with the query: "[framework_name] starter template with [key_components]"
+   - Format: Use the `web_search` tool with the query: "[framework_name] starter template with [key_components]"
    - Document top 3 options with GitHub stars count and last update date
 
-6. USE `brave_web_search`: Search for production-ready services that replace custom code using the `brave-search` MCP server.
+6. USE `web_search`: Search for production-ready services that replace custom code.
 
-   - Format: Use the `brave_web_search` tool via `use_mcp_tool` with the query: "[functionality] as a service for [framework_name]"
+   - Format: Use the `web_search` tool with the query: "[functionality] as a service for [framework_name]"
    - Document pricing tiers, features, and integration complexity
 
 7. CREATE EVALUATION TABLE: For each component, create a comparison table using appropriate criteria:
@@ -216,9 +200,7 @@ Total weighted score must exceed 4.0 for selected technologies.
 
 9. Present the technical approach summary for validation:
 
-   ```
-   <ask_followup_question>
-   <question>I've analyzed the technical approach for implementing your solution:
+   "I've analyzed the technical approach for implementing your solution:
 
    Overall Architecture:
    [ARCHITECTURE_DESCRIPTION]
@@ -226,21 +208,21 @@ Total weighted score must exceed 4.0 for selected technologies.
    Component Decisions:
 
    [COMPONENT_NAME]:
+
    - Selected Solution: [SELECTED_TECHNOLOGY] [VERSION]
    - Key Advantages: [KEY_ADVANTAGES]
    - Main Considerations: [MAIN_CONSIDERATIONS]
 
    [Repeat for each component]
 
-   Is this technical approach appropriate for your project?</question>
-   <follow_up>
-   <suggest>Yes, the technical approach is appropriate</suggest>
-   <suggest>No, I prefer using [ALTERNATIVE_TECHNOLOGY] for [COMPONENT]</suggest>
-   <suggest>No, please reconsider the architecture to account for [CONSIDERATION]</suggest>
-   <suggest>No, [SPECIFIC_CONCERN_OR_QUESTION]</suggest>
-   </follow_up>
-   </ask_followup_question>
-   ```
+   Is this technical approach appropriate for your project?"
+
+   Suggested responses:
+
+   - "Yes, the technical approach is appropriate"
+   - "No, I prefer using [ALTERNATIVE_TECHNOLOGY] for [COMPONENT]"
+   - "No, please reconsider the architecture to account for [CONSIDERATION]"
+   - "No, [SPECIFIC_CONCERN_OR_QUESTION]"
 
 ### Step 5: Create Artifacts
 
@@ -249,27 +231,22 @@ Total weighted score must exceed 4.0 for selected technologies.
 2. Check for the existence of a `.project-docs` directory:
 
    ```
-   <list_files>
-   <path>.</path>
-   <recursive>false</recursive>
-   </list_files>
+   list_dir: .
    ```
 
 3. If the `.project-docs` [DOCS_FOLDER] directory doesn't exist, create it:
 
    ```
-   <execute_command>
-   <command>mkdir .project-docs</command>
-   </execute_command>
+   run_terminal_cmd: mkdir .project-docs
    ```
 
-4. Create the Product Requirements Document (prd.md) using <write_to_file>:
+4. Create the Product Requirements Document (prd.md) using edit_file:
 
    - Create the file in the [DOCS_FOLDER] directory
    - Follow the PRD Template structure EXACTLY
    - NEVER hallucinate business metrics, KPIs, or statistics - only include metrics explicitly provided in [PROJECT_DESCRIPTION] or user feedback.
 
-5. Create the Tasks Document (tasks.md) using <write_to_file>:
+5. Create the Tasks Document (tasks.md) using edit_file:
 
    - Create the file in the [DOCS_FOLDER] directory
    - Follow the Tasks Template structure EXACTLY
@@ -296,7 +273,7 @@ Total weighted score must exceed 4.0 for selected technologies.
    - Replace any task like "Select and install [X]" with "Install and configure [SPECIFIC_TECHNOLOGY] [VERSION]"
    - Replace any task like "Research and select [X]" with "Implement [SPECIFIC_TECHNOLOGY] [VERSION]"
 
-6. Create the Technical Approach Document (technical-approach.md) using <write_to_file>:
+6. Create the Technical Approach Document (technical-approach.md) using edit_file:
 
    - Create the file in the [DOCS_FOLDER] directory
    - Follow the Technical Approach Template structure EXACTLY
@@ -316,10 +293,7 @@ Total weighted score must exceed 4.0 for selected technologies.
 7. Verify all documents were created successfully:
 
    ```
-   <list_files>
-   <path>.project-docs</path>
-   <recursive>false</recursive>
-   </list_files>
+   list_dir: .project-docs
    ```
 
 8. Ensure document cross-validation using the approach below:
@@ -334,24 +308,20 @@ Total weighted score must exceed 4.0 for selected technologies.
 
 2. Inform the user about the created documents:
 
-   ```
-   <ask_followup_question>
-   <question>I've successfully created the following project documentation:
+   "I've successfully created the following project documentation:
 
    1. Product Requirements Document (.project-docs/prd.md)
    2. Technical Approach Document (.project-docs/technical-approach.md)
    3. Implementation Tasks Document (.project-docs/tasks.md)
 
-   Would you like me to:
-   </question>
-   <follow_up>
-   <suggest>Display the contents of these documents</suggest>
-   <suggest>Make specific changes to one of the documents</suggest>
-   <suggest>Provide a summary of the key decisions in the technical approach</suggest>
-   <suggest>Explain the implementation plan and task dependencies</suggest>
-   </follow_up>
-   </ask_followup_question>
-   ```
+   Would you like me to:"
+
+   Suggested responses:
+
+   - "Display the contents of these documents"
+   - "Make specific changes to one of the documents"
+   - "Provide a summary of the key decisions in the technical approach"
+   - "Explain the implementation plan and task dependencies"
 
 ## Document Templates Examples
 
